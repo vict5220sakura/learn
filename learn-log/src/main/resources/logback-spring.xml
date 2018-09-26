@@ -2,7 +2,7 @@
 <configuration>
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 	
-	<property name="LOG_PATH" value="E:\\ww\\learn\\sprngLog" />
+	<property name="LOG_PATH" value="${user.dir}/logs" />
 	
     <!-- 文件输出格式 -->
     <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger [%file:%line] - %msg%n"/>
