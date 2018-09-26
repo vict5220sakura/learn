@@ -1,0 +1,20 @@
+server:
+  port: 5224
+  
+spring:
+  application:
+    name: eureka-client-zuul
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:5220/eureka/
+      
+zuul:
+  routes:
+    api-a:
+      path: /api-a/**
+      serviceId: eureka-cilent-learn
+    api-b:
+      path: /api-b/**
+      serviceId: eureka-client-feign

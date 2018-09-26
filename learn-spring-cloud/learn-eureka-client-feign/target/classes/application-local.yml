@@ -1,0 +1,14 @@
+server:
+  port: 5223
+  
+spring:
+  application:
+    name: eureka-client-feign
+    
+eureka: 
+  client: 
+    serviceUrl: 
+      defaultZone: http://localhost:5220/eureka/
+feign:
+  hystrix:
+    enabled: true #打开feign断路器功能

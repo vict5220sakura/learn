@@ -1,0 +1,11 @@
+server:
+  port: 5221
+  hi: 122
+spring:
+  application: 
+    name: eureka-cilent-learn
+    
+eureka:
+  client:
+    serviceUrl: 
+      defaultZone: http://localhost:5220/eureka/

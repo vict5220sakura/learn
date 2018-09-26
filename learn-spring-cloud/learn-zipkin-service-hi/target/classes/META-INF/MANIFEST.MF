@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: learn-zipkin-service-hi
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: Administrator
+Implementation-Vendor-Id: com.vict5220
+Build-Jdk: 1.8.0_112
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/learn-spring-cloud/learn-zipkin-service-hi
+Created-By: Maven Integration for Eclipse
+

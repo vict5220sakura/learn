@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: config-client
+  cloud: 
+    config:
+      #uri: http://127.0.0.1:5225/
+      label: master
+      profile: dev
+#      request-read-timeout: 20
+      discovery:
+        enabled: true
+        serviceId: config-server
+        
+server: 
+  port: 5226
+  
+eureka: 
+  client: 
+    serviceUrl: 
+      defaultZone: http://localhost:5220/eureka/

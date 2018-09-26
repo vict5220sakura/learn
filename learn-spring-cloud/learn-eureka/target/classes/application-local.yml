@@ -1,0 +1,17 @@
+server:
+  port: 5220 #启动端口
+  
+spring:
+  application: 
+    name: eurka-server
+      
+eureka:
+  instance:
+    hostname: localhost #host
+  client:
+    registerWithEureka: false #自己不注册自己
+    fetchRegistry: false #自己不注册自己
+    serviceUrl: 
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server: 
+    enable-self-preservation: false #本地测试可以关闭eureka自我保护

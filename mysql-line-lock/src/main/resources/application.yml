@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: test_line_lock  
+  datasource: 
+    url: jdbc:mysql://127.0.0.1:3306/test_line_lock?characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root 
+server:
+  port: 3016  #Tomcat端口

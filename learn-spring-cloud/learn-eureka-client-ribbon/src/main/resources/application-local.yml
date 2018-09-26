@@ -1,0 +1,9 @@
+server:
+  port: 5222
+spring:
+  application:
+    name: eureka-client-ribbon
+eureka: 
+  client:
+    service-url: 
+      defaultZone: http://localhost:5220/eureka/

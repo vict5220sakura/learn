@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: local
+bithaw:
+  mq:
+    accessKey: LTAIC3Jm9JD00E5a
+    secretKey: JHjpZiuhDRvKb4v43wKp3Eav35ek5D
+    producerId: PID_HULIGOU_ORDER
+    consumerId[0]: CID_HULIGOU_ORDER
+    topic: huligou_dev_order
+  oss:
+    domain: http://xx-oss
+    appKey: LTAIgaAlPWJTDkmz
+    appSecret: aBdVgUtcKEZoKylAirohrMpInXJklH
+    bucket: huligou
+    endpoint: oss-cn-shanghai.aliyuncs.com
+    

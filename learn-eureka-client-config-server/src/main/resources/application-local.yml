@@ -1,0 +1,19 @@
+server: 
+  port: 5225
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server: 
+        git:
+          uri: https://github.com/vict5220sakura/learn-spring-eureka-config.git
+          searchPaths: /
+          username: vict5220sakura
+          password: .asuka.0MKSSO
+          timeout: 20
+      label: master
+eureka: 
+  client: 
+    serviceUrl: 
+      defaultZone: http://localhost:5220/eureka/

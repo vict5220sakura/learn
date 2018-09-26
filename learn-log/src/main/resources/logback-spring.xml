@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	
+	<property name="LOG_PATH" value="E:\\ww\\learn\\sprngLog" />
+	
+    <!-- 文件输出格式 -->
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger [%file:%line] - %msg%n"/>
+
+    <property name="BASE_FILE_PATH" value="${LOG_PATH}"/>
+    <property name="INFO_FILE_PATH" value="${LOG_PATH}/info"/>
+    <property name="WARN_FILE_PATH" value="${LOG_PATH}/warn"/>
+    <property name="ERROR_FILE_PATH" value="${LOG_PATH}/error"/>
+	
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	
+	<appender name="INFO-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <file>${BASE_FILE_PATH}/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${INFO_FILE_PATH}/info.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <maxHistory>100000</maxHistory>
+            <!-- 日志文件rolling触发策略 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>10MB</MaxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="WARN-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <file>${BASE_FILE_PATH}/warn.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${WARN_FILE_PATH}/warn.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <maxHistory>100000</maxHistory>
+            <!-- 日志文件rolling触发策略 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>10MB</MaxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <file>${BASE_FILE_PATH}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${ERROR_FILE_PATH}/error.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <maxHistory>100000</maxHistory>
+            <!-- 日志文件rolling触发策略 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>10MB</MaxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+	
+<!-- 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/home/_xyy_/output/SpringBootDemo/logs/stdout.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			daily rollover 保存历史记录到这个文件夹一日起为后缀
+			<fileNamePattern>/home/_xyy_/output/SpringBootDemo/logs/stdout.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+			keep 30 days' worth of history
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>10MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</pattern>
+			<charset>UTF-8</charset> 此处设置字符集
+		</encoder>
+	</appender> -->
+	<root level="INFO">
+		<appender-ref ref="CONSOLE"/>
+        <appender-ref ref="INFO-APPENDER"/>
+        <appender-ref ref="WARN-APPENDER"/>
+        <appender-ref ref="ERROR-APPENDER"/>
+	</root>
+</configuration>
