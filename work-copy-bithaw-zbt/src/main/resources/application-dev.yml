@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: zbt-service
+  datasource: 
+    url: jdbc:mysql://192.168.199.167:3306/bithaw_dev?characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+  redis:
+    database: 0
+    host: 101.132.242.63
+    port: 6379
+    password: c5mall888
+    pool:
+      max-active: 3000
+      max-wait: 1500
+      max-idle: 1000
+    timeout: 1000
+    testOnBorrow: true  
+server:
+  port: 3015  #Tomcat端口
+
+#服务注册与发现
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://boss:bithaw180830@localhost:2001/eureka/  #Eureka Server
+
+  #服务注册时，在Eureka的实例配置
+  #metadata-map.cluster：指定服务集群名称（一个服务集群包括多个app）
+  instance:
+    preferIpAddress: true
+    statusPageUrlPath: /info
+    metadata-map:
+      cluster: MAIN
+
+feign:
+   hystrix:
+     enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000  #Feign超时时间
+
+
+bithaw: 
+  feign:
+    token: ba49ca929afb11e89eb6529269fb1459529269fb1459cb977ec0
+    
+web3j:
+  #client-address: http://127.0.0.1:8544 #本地
+  client-address: http://47.75.143.24:9138
+  admin-client: true
+  http-timeout-seconds: 60000
+  
+logging: 
+  level:
+    com.bithaw.btc.feign.SysCoinfigClient: DEBUG
+
+signserver: 
+  privateKey: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAmDjL9uLXuc68zA7Jp6uqOYlOdNOzHqpmqjDbTQle458bxZMOkNtHtgzo3ahqX13Pb9GCo25Ob2o5ovayJ/uArQIDAQABAkEAkzY6auUuY89/3ohelPz7fvE/ItSpYXrCFs1xCKuLTO1Qh4x2snlOt3eMGM3AJjk+oGXgNq0YX2vHnKWZT1qkgQIhAM/Jd9UuP7wJO7BuOgzxBkxjiVbvv0AXuG8/9w0C9/elAiEAu4rDrdh8S0nI6vJ8PVQAR4lxxXHwCpeXyFEkCa7H1mkCIDTqh9wAhTar20mZKKt3DjWR+73qHHiEEfIzBgWIRgIJAiBdQScELv2/QjVR/rmglUB+Ue3szDccTT0AMrjEx9A+4QIgFIxSXNqr0Jbw44K89EgOol430eY0mogHnRZQTPy8gTE=
+  publicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWQXnDtmzhdXxTZrueSj6FqboYArELYweFPwlCEpA1uv0fqJR3TcUyx4K/2NkaAoEtXU7ON/2Nmpp3eNp00N7geS88ka4K+dUTO18B2dqgnH3ueNPkqUyoajWQFZKwdikeoOasRBQS50ex9ky1MwtFVBq+YefVTXfQOUUT1v3VQwIDAQAB

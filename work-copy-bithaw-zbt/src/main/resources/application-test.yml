@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: zbt-service
+      #Mysql地址
+  datasource:
+    url: jdbc:mysql://rm-j6cmir7g6i6x5z3v9.mysql.rds.aliyuncs.com/hawbit_test?characterEncoding=UTF-8&useSSL=false
+    username: block
+    password: rS1xGD6IYuqW7AuT
+    driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    database: 0
+    host: 101.132.242.63
+    port: 6379
+    password: c5mall888
+    pool:
+      max-active: 3000
+      max-wait: 1500
+      max-idle: 1000
+    timeout: 1000
+    testOnBorrow: true 
+server:
+  port: 3015  #Tomcat端口
+
+#服务注册与发现
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://boss:bithaw180830@localhost:2001/eureka/  #Eureka Server
+
+  #服务注册时，在Eureka的实例配置
+  #metadata-map.cluster：指定服务集群名称（一个服务集群包括多个app）
+  instance:
+    preferIpAddress: true
+    statusPageUrlPath: /info
+    metadata-map:
+      cluster: MAIN
+
+feign:
+   hystrix:
+     enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000  #Feign超时时间
+
+
+bithaw:
+  feign:
+    token: ba49ca929afb11e89eb6529269fb1459529269fb1459cb977ec0
+    
+web3j:
+  client-address: http://47.89.8.5:9142 #默认
+#  client-address: http://127.0.0.1:8544 #本地
+  admin-client: true
+  http-timeout-seconds: 60000
+
+logging: 
+  level:
+    com.bithaw.btc.feign.SysCoinfigClient: DEBUG

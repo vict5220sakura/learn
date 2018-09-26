@@ -1,0 +1,549 @@
+//Token Tracker:	BHAW ($B)
+//合约地址:0x7F733AeA11F399841f5F65a4D3e757893cb7F802
+
+//合约代码:
+//pragma solidity ^0.4.24;
+
+//代币小数位: 6位
+
+//合约不100%对应于下列代码
+library SafeMath {
+
+    /* 加法 */
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        assert(c >= a);
+        return c;
+    }
+
+    /* 减法 */
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        assert(b <= a);
+        return a - b;
+    }
+
+    /* 乘法 */
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        if (a == 0) {
+            return 0;
+        }
+        uint256 c = a * b;
+        assert(c / a == b);
+        return c;
+    }
+
+    /* 除法 */
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a / b;
+        return c;
+    }
+
+}
+/**
+ * @dev 合约管理员
+ * 登记合约管理员地址，并可实现管理员转让
+ */
+contract Ownable {
+    
+    /*总裁权限钱包地址 */
+    address public owner;
+
+    /* 财务总监权限钱包地址 */
+    address public zbtcfo;
+ 
+     /* 平台管理员权限钱包地址 */
+    address public zbtadmin;
+       
+    /* 转让管理员日志 */
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /* 转让财务总监日志 */
+    event CFOshipTransferred(address indexed previousCFO, address indexed newCFO);
+
+    /* 转让平台管理员权限日志 */
+    event AdminshipTransferred(address indexed previousZBTAdmin, address indexed newZBTAdmin);
+
+
+    /**
+     * @dev 设置合约创建者为合约管理员
+     */
+    constructor () public {
+        owner = msg.sender;
+        zbtcfo = msg.sender;
+        zbtadmin = msg.sender;
+    }
+
+    /**
+    * @dev 仅限合约管理员操作
+    */
+    modifier onlyCEO() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    /**
+    * @dev 仅限财务总监操作
+    */
+    modifier onlyCFO() {
+        require(msg.sender == zbtcfo);
+        _;
+    }
+
+    /**
+    * @dev 仅限平台管理员操作
+    */
+    modifier onlyZBTadmin() {
+        require(msg.sender == zbtadmin);
+        _;
+    }
+
+    /**
+    * @dev 将合约管理员权限转让给新管理员
+    * @param newOwner 新管理员钱包地址
+    */
+    function transferOwnership(address newOwner) public onlyCEO {
+        require(newOwner != address(0));
+      
+        owner = newOwner;
+        
+        emit OwnershipTransferred(owner, newOwner);
+    }
+
+    /**
+    * @dev 设置财务总监管理员
+    * @param _newcfo 新财务总监钱包地址
+    */
+    function transferCFOship(address _newcfo) public onlyCEO {
+        require(_newcfo != address(0));
+      
+        zbtcfo = _newcfo;
+        
+        emit CFOshipTransferred(zbtcfo, _newcfo);
+    }
+   
+   /**
+    * @dev 设置新ZBT平台管理员
+    * @param _newzbtadmin 新ZBT平台钱包地址
+    */
+    function transferZBTship(address _newzbtadmin) public onlyCEO {
+        require(_newzbtadmin != address(0));
+      
+        zbtadmin = _newzbtadmin;
+        
+        emit AdminshipTransferred(zbtadmin, _newzbtadmin);
+    }
+     
+}
+
+/* 合约交易开关，只有合约管理员才能操作 */
+contract Pausable is Ownable {
+    /* 开关事件，如果没有参数，仅记录事件名 */
+    event Pause();
+    event Unpause();
+
+    /* 合约交易开关变量 */
+    bool public paused = false;
+
+    /**
+    * @dev 仅限未停止合约交易情况下操作
+    */
+    modifier whenNotPaused() {
+        require(!paused);
+        _;
+    }
+
+    /**
+    * @dev 仅限停止合约交易情况下操作
+    */
+    modifier whenPaused() {
+        require(paused);
+        _;
+    }
+
+    /**
+    * @dev 合约管理员停止合约交易
+    */
+    function pause() onlyCEO whenNotPaused public {
+        paused = true;
+        emit Pause();
+    }
+
+    /**
+    * @dev 合约管理员开启合约交易
+    */
+    function unpause() onlyCEO whenPaused public {
+        paused = false;
+        emit Unpause();
+    }
+}
+
+/* ERC20标准 */
+contract ERC20Basic {
+    /* token总发行量 */
+    uint256 public totalSupply;
+    
+    /* 查询指定钱包地址的token余额 */
+    function balanceOf(address who) public view returns (uint256);
+    
+    /* 转账value个token到指定钱包地址to */
+    function transfer(address to, uint256 value) public returns (bool);
+    
+    /* 转账日志 */
+    event Transfer(address indexed from, address indexed to, uint256 value);
+}
+
+/* ERC20标准 */
+contract ERC20 is ERC20Basic {
+    /* 获取允许spender还能从owner中提取token的额度 */
+    function allowance(address owner, address spender) public view returns (uint256);
+    
+    /* 批准spender账户从自己的账户转移value个token，可分多次转移 */
+    function transferFrom(address from, address to, uint256 value) public returns (bool);
+    
+    /* 与approve搭配使用，approve批准之后，调用transferFrom来转移token */
+    function approve(address spender, uint256 value) public returns (bool);
+    
+    /* 当调用approve成功时，一定要触发Approval事件 */
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+/* 基础合约，实现ERC20标准 */
+contract BasicToken is ERC20Basic {
+    /* 导入安全运算库 */
+    using SafeMath for uint256;
+
+    /* 存储指定钱包的token余额 */
+    mapping(address => uint256) public balances;
+
+
+    /**
+     * @dev 获取指定钱包地址的token余额
+     * @param _owner 指定钱包地址
+     * @return uint256
+     */
+    function balanceOf(address _owner) public view returns (uint256 balance) {
+        return balances[_owner];
+    }
+
+}
+
+/* 标准合约，实现ERC20标准 */
+contract StandardToken is ERC20, BasicToken,Ownable {
+    
+    /* 冻结指定账号 */
+    mapping (address => bool) public frozenAccount;
+
+    /* 指定账号的token额度 */
+    mapping (address => mapping (address =>uint256)) internal allowed;
+
+
+
+    /* This notifies clients about the amount burnt */
+    event Burn(address indexed from, uint256 value);
+	
+	    /* This notifies clients about the amount returntoken */
+    event SetReturnToken(address indexed oldaddr,address indexed newaddr, uint256 value);
+	
+
+   /* This generates a public event on the blockchain that will notify clients */
+    event FrozenFunds(address target, bool frozen);
+    
+    
+    /**
+     * @dev 转移_value个token到指定钱包地址_to
+     * @param _to 指定钱包地址
+     * @param _value token个数
+     */
+    function transfer(address _to, uint256 _value) public returns (bool) {
+    
+        require(_to != address(0));
+        require(!frozenAccount[msg.sender]);           // Check if sender is frozen
+        require(!frozenAccount[_to]);              // Check if recipient is frozen
+        require(_value <= balances[msg.sender]);
+
+        /* 如果余额不足，SafeMath.sub将抛出异常 */
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        
+        emit Transfer(msg.sender, _to, _value);
+        return true;
+    }
+
+    /**
+     * @dev 从一个钱包地址转移token到另一个钱包地址，更新被允许的token额度
+     * 与approve搭配使用，approve批准之后，调用transferFrom来转移token
+     * @param _from 从哪个钱包地址发送token
+     * @param _to 转移到哪个钱包地址
+     * @param _value 转移多少个token，个数必须为非负数
+     */
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+        // Prevent transfer to 0x0 address. Use burn() instead
+        require(_to != 0x0);
+        
+     
+        require(!frozenAccount[_from]);           // Check if sender is frozen
+        require(!frozenAccount[_to]);              // Check if recipient is frozen
+        
+        require(_value <= balances[_from]);
+      //  require(_value <= allowed[msg.sender][_from]);
+
+        balances[_from] = balances[_from].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        
+      //  allowed[msg.sender][_from] = allowed[msg.sender][_from].sub(_value);
+        
+        emit Transfer(_from, _to, _value);
+        return true;
+    }
+
+	function batchTransfer(address[] _receivers, uint256 _value) public onlyCEO returns (bool) {
+		
+		    uint256 cnt = _receivers.length;
+		    
+		    uint256 amount = _value.mul(cnt); 
+		    
+		    require(cnt > 0 && cnt <= 20);
+		    
+		    require(_value > 0 && balances[msg.sender] >= amount);
+
+		    balances[msg.sender] = balances[msg.sender].sub(amount);
+		    
+		    for (uint256 i = 0; i < cnt; i++) {
+		        balances[_receivers[i]] = balances[_receivers[i]].add(_value);
+		        emit Transfer(msg.sender, _receivers[i], _value);
+		    }
+		    
+		    return true;
+		  }
+
+ 
+    /**
+     * @dev 批准_spender从自己的账户转移value个token，可分多次转移
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     * @param _spender 将要花费token的地址
+     * @param _value token个数，可以理解成token额度
+    */
+    function approve(address _spender, uint256 _value) public returns (bool) {
+    
+        allowed[msg.sender][_spender] = _value;
+        
+        emit Approval(msg.sender, _spender, _value);
+        return true;
+    }
+
+    /**
+     * @dev 获取允许spender提取token的额度
+     * @param _owner 上一级钱包地址，如合约管理员钱包地址
+     * @param _spender 将要花费token的地址
+     * @return uint256
+     */
+    function allowance(address _owner, address _spender) public view returns (uint256) {
+        return allowed[_owner][_spender];
+    }
+
+    /**
+     * @dev 获取_owner上冻结标志
+       
+     * @return bool
+     */
+    function freezeFlag(address _owner) public view returns (bool) {
+        return frozenAccount[_owner];
+    }
+    
+    /**
+     * @dev 增加spender的可用token额度
+     * @param _spender 将要花费token的地址
+     * @param _addedValue 需要增加token的个数，可理解成可使用的token额度
+     */
+    function increaseApproval(address _spender, uint256 _addedValue) public returns (bool) {
+        allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
+        
+        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+        return true;
+    }
+
+    /**
+     * @dev 减少spender的可用token额度
+     * @param _spender 将要花费token的地址
+     * @param _subtractedValue 需要减少token的个数，可理解成可使用的token额度
+     */
+    function decreaseApproval(address _spender, uint256 _subtractedValue) public returns (bool) {
+        uint256 oldValue = allowed[msg.sender][_spender];
+        
+        if (_subtractedValue > oldValue) {
+            allowed[msg.sender][_spender] = 0;
+        } else {
+            allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);
+        }
+        
+        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+        return true;
+    }
+
+  function burn(uint256 _burnValue)  public onlyCEO returns (bool success) {
+       // Check if the sender has enough
+	    require(balances[msg.sender] >= _burnValue);
+     
+        balances[msg.sender] = balances[msg.sender].sub(_burnValue);                      // Subtract from the sender
+        
+        totalSupply = totalSupply.sub(_burnValue);                                       // Updates totalSupply
+        
+        emit Burn(msg.sender, _burnValue);
+        return true;
+    }
+	
+	    /**
+     * 删除帐户的余额（含其他帐户）,操作是不可逆的,只有平台管理员有权限操作
+     *
+     * Remove `_value` tokens from the system irreversibly on behalf of `_from`.
+     *
+     * @param _from the address of the sender
+     * @param _value the amount of money to burn
+     */
+    function burnFrom(address _from, uint256 _value) public onlyZBTadmin returns (bool success) {
+        
+        require(balances[_from] >= _value);                // Check if the targeted balance is enough
+       
+        require(_from != msg.sender);
+        
+     //  require( allowed[msg.sender][_from]  >= _value);    // Check allowance
+                
+        balances[_from] = balances[_from].sub(_value);     // Subtract from the targeted balance
+        
+    //    allowed[msg.sender][_from] = allowed[msg.sender][_from].sub(_value);             // Subtract from the sender's allowance
+             
+        totalSupply =totalSupply.sub(_value) ;                              // Update totalSupply
+        
+        emit Burn(_from, _value);
+        return true;
+    }
+    
+ 	    /**
+     * 丢密码用户ZBT的转存恢复
+     *
+     *  `_value` 平台中查询的ZBT余额值.
+     *   
+     */
+    function setTokenreturn(address _oldaddr, address _newaddr, uint256 _value) public onlyCFO returns (bool success) {
+        require(_oldaddr != msg.sender);           
+        require(_newaddr != msg.sender && _newaddr !=0x0);    
+                             
+        require(balances[_oldaddr] >= _value);                // 检查丢密码ZBT账户的余额比恢复的余额要多。
+                                
+        balances[_newaddr] = balances[_newaddr].add(_value);     // 用户新ZBT地址增加丢密码账号上的余额
+        
+        balances[_oldaddr] = 0;       //余额清零;
+        
+        freezeAccount(_oldaddr,true);   //冻结丢密码账户 ？？
+   
+        emit SetReturnToken(_oldaddr,_newaddr, _value);    //触发丢密恢复ZBT事件
+        
+        return true;
+    }
+       
+   /**
+     * 冻结、解冻ZBT账户地址
+     *
+     *  _target 被冻结的地址。
+     *
+   
+     */
+    function freezeAccount(address _target, bool _freeze) public onlyZBTadmin returns (bool success) {
+        
+        require(_target != msg.sender);
+        
+        frozenAccount[_target] = _freeze;
+        emit FrozenFunds(_target, _freeze);
+        return _freeze;
+    }
+
+
+
+}
+
+contract PausableToken is StandardToken, Pausable {
+
+    function transfer(address _to, uint256 _value) public whenNotPaused returns (bool) {
+        return super.transfer(_to, _value);
+    }
+
+    function transferFrom(address _from, address _to, uint256 _value) public whenNotPaused returns (bool) {
+        return super.transferFrom(_from, _to, _value);
+    }
+
+    function  batchTransfer(address[] _receivers, uint256 _value) public whenNotPaused returns (bool) {
+        return super.batchTransfer(_receivers, _value);
+    }
+
+
+    function approve(address _spender, uint256 _value) public whenNotPaused returns (bool) {
+        return super.approve(_spender, _value);
+    }
+
+    function increaseApproval(address _spender, uint256 _addedValue) public whenNotPaused returns (bool success) {
+        return super.increaseApproval(_spender, _addedValue);
+    }
+
+    function decreaseApproval(address _spender, uint256 _subtractedValue) public whenNotPaused returns (bool success) {
+        return super.decreaseApproval(_spender, _subtractedValue);
+    }
+    
+    
+  function burn( uint256 _burnValue) public whenNotPaused returns (bool success) {
+        return super.burn(_burnValue);
+    }
+    
+  function burnFrom(address _from, uint256 _burnValue) public whenNotPaused returns (bool success) {
+        return super.burnFrom( _from,_burnValue);
+    }    
+    
+  function freezeAccount(address _target, bool _freeze)  public whenNotPaused returns (bool success) {
+        return super.freezeAccount(_target,_freeze);
+    }
+    
+   /**
+     * 丢密码用户ZBT转存恢复
+     *
+     *  `_value` 平台中查询的ZBT余额值.
+     *   
+     */
+    function setTokenreturn(address _oldaddr, address _newaddr, uint256 _value) public whenNotPaused returns (bool success) {
+        
+        return super.setTokenreturn(_oldaddr,_newaddr,_value);
+    }
+       
+}
+
+contract CustomToken is PausableToken {
+    /* token的名称 */
+    string public name;
+    
+    /* token的icon */
+    string public symbol;
+    
+    /* token支持的最小精度，也就是小数点后多少位 */
+    uint8 public decimals ;
+    
+
+    
+    constructor (string tokenName, string tokenSymbol,uint8 initDecimals,uint256 initialSupply) public {
+        
+        /* 初始化Token的名称 */
+        name = tokenName;
+        
+        /* 初始化Token的Icon */
+        symbol = tokenSymbol;
+        
+        /* 初始化Token的精度值 */
+        decimals = initDecimals;
+        
+       /* 计算token发行总数量 */
+       totalSupply = initialSupply.mul(10 ** uint256(decimals));
+        
+      /* 将所有Token存储在合约管理员的数字账号上 */
+        balances[msg.sender] = totalSupply;
+    }
+    
+}
+
+
