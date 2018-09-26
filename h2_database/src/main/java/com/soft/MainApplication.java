@@ -6,8 +6,11 @@
  */
 package com.soft;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
+
+import com.soft.ui.util.MyGuiFrame;
 
 /**
  * @Description 
@@ -18,6 +21,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MainApplication {
 	public static void main(String[] args) throws Exception {
-		SpringApplication.run(MainApplication.class, args);
+		SpringApplicationBuilder builder = new SpringApplicationBuilder(MainApplication.class);
+        ApplicationContext applicationContext = builder.headless(false).run(args);
+        MyGuiFrame swing = applicationContext.getBean(MyGuiFrame.class);
+        swing.setVisible(true);
 	}
 }
