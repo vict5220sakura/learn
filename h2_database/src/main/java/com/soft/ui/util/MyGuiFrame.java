@@ -69,9 +69,9 @@ public class MyGuiFrame extends JFrame implements ActionListener, FocusListener 
     }
  
     // main方法, 创建对象窗口, 并且设置可见
-    public static void main(String[] args) {
-        new MyGuiFrame().setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        new MyGuiFrame().setVisible(true);
+//    }
  
     // 动作响应处理
     public void actionPerformed(ActionEvent e) {

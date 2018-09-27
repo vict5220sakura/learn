@@ -37,7 +37,9 @@ public class Start implements ApplicationRunner{
 	 */
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		//new MyGuiFrame().setVisible(true);
+		log.info("Start");
+		new MyGuiFrame().setVisible(true);
+		log.info("End");
 	}
 
 }
