@@ -1,24 +1,30 @@
 package com.soft.ui.util;
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigDecimal;
+
 import javax.swing.*;
 
 import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
  
 //本类实现了ActionListener接口. 一个ActionListener可以响应JMenuItem 和JButton的动作
 //本类实现FocusListener接口,一个FocusListener可以响应JTextField,JButton等
 //JButton响应多个事件接口
 @Component
+@Slf4j
 public class MyGuiFrame extends JFrame implements ActionListener, FocusListener {
     private JTextField jtf1;
     private JTextField jtf2;
     private JTextField jtf3;
+    private JTextField jl;
     private JButton jb1;
      
     public MyGuiFrame() {
         // ----------窗口属性的设置----------
         setTitle("窗口应用程序");// 窗口标题
-        setSize(380, 120);// 窗口大小
+        setSize(1000, 120);// 窗口大小
         setLocationRelativeTo(null);// 窗口居于屏幕中央
         setDefaultCloseOperation(EXIT_ON_CLOSE);// 点击关闭窗口后退出jvm虚拟机
         getContentPane().setLayout(new BorderLayout(5, 3));// 边界布局,水平间距5,垂直间距3
@@ -32,16 +38,17 @@ public class MyGuiFrame extends JFrame implements ActionListener, FocusListener 
  
     private void initPanel() {
         JPanel jp = new JPanel(new FlowLayout(FlowLayout.CENTER));// 流式布局
-        jtf1 = new JTextField(8);
+        jtf1 = new JTextField(20);
         jtf1.addFocusListener(this);// 添加焦点响应
-        JLabel jl = new JLabel("+");
-        jtf2 = new JTextField(8);
+        jl = new JTextField(5);
+        jl.setText("+");
+        jtf2 = new JTextField(20);
         jtf2.addFocusListener(this);
         jb1 = new JButton("=");
         jb1.addActionListener(this);// 添加动作响应
         jb1.addFocusListener(this);// 添加焦点响应
  
-        jtf3 = new JTextField(8);
+        jtf3 = new JTextField(20);
         jtf3.setEditable(false);
  
         jp.add(jtf1);
@@ -83,18 +90,33 @@ public class MyGuiFrame extends JFrame implements ActionListener, FocusListener 
             JOptionPane.showMessageDialog(this, "加法");
         }
         if (cmd.equals("=")) {
-             
-            String s1 = jtf1.getText().trim();
-            String s2 = jtf2.getText().trim();
-            if(s1.equals("")){
-                s1="0";
-            }
-            if(s2.equals("")){
-                s2="0";
-            }
-            double num1 = Double.parseDouble(s1);//从字符串转小数
-            double num2 = Double.parseDouble(s2);
-            jtf3.setText((num1 + num2) + "");// 数字类型转字符串类型
+            
+        	String function = jl.getText().replaceAll(" ", "");
+        	String s1 = jtf1.getText().replaceAll(" ", "");
+            String s2 = jtf2.getText().replaceAll(" ", "");
+            BigDecimal b1 = new BigDecimal(s1);
+            BigDecimal b2 = new BigDecimal(s2);
+            BigDecimal returnNum = BigDecimal.ZERO;
+            
+            log.info("方法 {}",function);
+            
+        	switch (function) {
+			case "+":
+				returnNum = b1.add(b2);
+				break;
+			case "-":
+				returnNum = b1.subtract(b2);
+				break;
+			case "*":
+				returnNum = b1.multiply(b2);
+				break;
+			case "/":
+				returnNum = b1.divide(b2,20,BigDecimal.ROUND_HALF_UP);
+				break;
+			}
+        	
+            
+            jtf3.setText(returnNum.toPlainString());// 数字类型转字符串类型
  
         }
     }
