@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: local #本地第二分支
+endpoints:
+  shutdown:
+    enabled: true
+management:
+  security:
+    enabled: false

@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: btc-service
+  datasource: 
+    url: jdbc:mysql://192.168.199.167:3306/bithaw_dev?characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456 
+  redis:
+    database: 0
+    host: 101.132.242.63
+    port: 6379
+    password: c5mall888
+    pool:
+      max-active: 3000
+      max-wait: 1500
+      max-idle: 1000
+    timeout: 1000
+    testOnBorrow: true  
+server:
+  port: 3016  #Tomcat端口
+
+#服务注册与发现
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://boss:32474068058cc01ead33514f7f17ab58@172.16.0.63:2001/eureka/  #Eureka Server
+
+  #服务注册时，在Eureka的实例配置
+  #metadata-map.cluster：指定服务集群名称（一个服务集群包括多个app）
+  instance:
+    preferIpAddress: true
+    statusPageUrlPath: /info
+    metadata-map:
+      cluster: MAIN
+
+feign:
+   hystrix:
+     enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000  #Feign超时时间
+
+bithaw.feign.token: f52350fb1c2e44a2bffc01ab4b296a21ee1b1bd6d56b46888ff3a20af1f38c67
+
+logging:
+  level:
+    com.bithaw.btc.feign.SysCoinfigClient: DEBUG

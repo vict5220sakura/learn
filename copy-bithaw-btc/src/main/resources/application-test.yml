@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: btc-service
+  datasource: 
+    url: jdbc:mysql://rm-j6cx3bv6cy770cg3reo.mysql.rds.aliyuncs.com/hawbit_test?characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    username: block
+    password: rS1xGD6IYuqW7AuT
+  redis:
+    database: 0
+    host: 101.132.242.63
+    port: 6379
+    password: c5mall888
+    pool:
+      max-active: 3000
+      max-wait: 1500
+      max-idle: 1000
+    timeout: 1000
+    testOnBorrow: true 
+server:
+  port: 3016  #Tomcat端口
+
+#mybatis
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true  #表字段自动映射-驼峰
+    useColumnLabel: true
+  mapper-locations: classpath:com/bithaw/btc/mapper/**/*Mapper.xml
+
+#服务注册与发现
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://boss:bithaw180830@localhost:2001/eureka/  #Eureka Server
+
+  #服务注册时，在Eureka的实例配置
+  #metadata-map.cluster：指定服务集群名称（一个服务集群包括多个app）
+  instance:
+    preferIpAddress: true
+    statusPageUrlPath: /info
+    metadata-map:
+      cluster: MAIN
+
+feign:
+   hystrix:
+     enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000  #Feign超时时间
+
+bithaw.feign.token: ba49ca929afb11e89eb6529269fb1459529269fb1459cb977ec0
+
+logging:
+  level:
+    com.bithaw.btc.feign.SysCoinfigClient: DEBUG
