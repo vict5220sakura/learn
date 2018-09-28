@@ -6,7 +6,9 @@
  */
 package com.vict5220.util;
 
+import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -35,21 +37,21 @@ public class TextAiUtil {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	public Optional<JSONObject> translate(String text){
-		Optional<JSONObject> empty = Optional.empty();
-		
+	public Optional<String> translate(String text) throws IOException{
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-		map.add("module", "proxy");
-		map.add("action", "eth_call");
-		map.add("tag", "latest");
-		
-		SignUtil.signMd5(map, APIKEY);
+		map.add("app_id", APIID);
+		map.add("time_stamp", System.currentTimeMillis() / 1000L + "");
+		map.add("nonce_str", UUID.randomUUID().toString().replaceAll("-", ""));
+		map.add("type", "1");
+		map.add("text", text);
+		String sign = TencentAISignSort.getSignature(map.toSingleValueMap(), APIKEY);
+		map.add("sign", sign);
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-		ResponseEntity<String> postForEntity = restTemplate.postForEntity(etherscanUrl, request, String.class);
-		
-		return empty;
+		ResponseEntity<String> postForEntity = restTemplate.postForEntity(APIURL, request, String.class);
+		Optional<String> optional = Optional.ofNullable(postForEntity).map(o -> o.getBody());
+		return optional;
 	}
 }

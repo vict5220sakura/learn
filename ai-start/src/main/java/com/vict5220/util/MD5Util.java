@@ -81,7 +81,7 @@ public class MD5Util {
 		return sb.toString();
 	}
 
-	public static void main(String[] args) {
+	public static void test(String[] args) {
 
 		long beginTime = System.currentTimeMillis();
 		File fileZIP = new File("E:/android-sdk-windows.7z");

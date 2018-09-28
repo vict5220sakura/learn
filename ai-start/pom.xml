@@ -16,6 +16,7 @@
 		<version>1.5.6.RELEASE</version>
 	</parent>
 	<dependencies>
+		<!-- 腾讯智能AI别人写的工具类 -->
 		<dependency>
 			<groupId>cn.xsshome</groupId>
 			<artifactId>taip</artifactId>
@@ -50,6 +51,17 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.47</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+		</dependency>
+		<!-- 图片压缩 -->
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<version>0.4.8</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
