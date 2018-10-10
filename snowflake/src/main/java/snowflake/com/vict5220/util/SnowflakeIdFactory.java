@@ -162,8 +162,8 @@ public class SnowflakeIdFactory {
 // 
 //        /** case2: 单线程-测试多个生产者同时生产N个id,验证id是否有重复?
 //         *   结论: 验证通过,没有重复. */
-//        testProductId(1,2,10000);//验证通过!
-//        testProductId(1,2,20000);//验证通过!
+        testProductId(1,2,10000);//验证通过!
+        testProductId(1,2,20000);//验证通过!
 // 
 //        /** case3: 多线程-测试多个生产者同时生产N个id, 全部id在全局范围内是否会重复?
 //         *   结论: 验证通过,没有重复. */
